@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import BottomTabBar from '../components/common/BottomTabBar';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import BudgetScreen from '../screens/BudgetScreen';
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
@@ -10,6 +11,7 @@ export default function MemberNavigator() {
   return (
     <Navigator screenOptions={{ headerShown: false }} tabBar={BottomTabBar}>
       <Screen name="Home" component={HomeScreen} />
+      <Screen name="Budget" component={BudgetScreen} />
       <Screen name="Profile" component={ProfileScreen} />
     </Navigator>
   );
