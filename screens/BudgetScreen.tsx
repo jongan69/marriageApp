@@ -1,97 +1,73 @@
 import * as React from 'react';
 import { Text, Heading } from 'native-base';
-import { ScrollView, Dimensions } from 'react-native';
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-} from 'react-native-chart-kit';
+import { ScrollView, Dimensions, StyleSheet } from 'react-native';
+import { LineChart } from 'react-native-chart-kit';
 import { t } from '../utils';
 import Screen from '../components/common/Screen';
 import Button from '../components/common/Button';
 
-import {
-  data,
-  contributionData,
-  pieChartData,
-  progressChartData,
-} from '../fakeData';
+const { screenWidth } = Dimensions.get('window');
+const height = 220;
 
-const width = Dimensions.get('window').width
-const height = 220
-const chartConfigs = [
-  {
-    backgroundColor: '#000000',
-    backgroundGradientFrom: '#1E2923',
-    backgroundGradientTo: '#08130D',
-    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-    style: {
-      borderRadius: 16,
-    },
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    padding: 10,
   },
-  {
-    backgroundColor: '#022173',
-    backgroundGradientFrom: '#022173',
-    backgroundGradientTo: '#1b3fa0',
-    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    style: {
-      borderRadius: 16,
-    },
+  header: {
+    textAlign: 'center',
+    fontSize: 18,
+    padding: 16,
+    marginTop: 16,
   },
-  {
-    backgroundColor: '#ffffff',
-    backgroundGradientFrom: '#ffffff',
-    backgroundGradientTo: '#ffffff',
-    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-  },
-  {
-    backgroundColor: '#26872a',
-    backgroundGradientFrom: '#43a047',
-    backgroundGradientTo: '#66bb6a',
-    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    style: {
-      borderRadius: 16,
-    },
-  },
-  {
-    backgroundColor: '#000000',
-    backgroundGradientFrom: '#000000',
-    backgroundGradientTo: '#000000',
-    color: (opacity = 1) => `rgba(${255}, ${255}, ${255}, ${opacity})`,
-  },
-  {
-    backgroundColor: '#0091EA',
-    backgroundGradientFrom: '#0091EA',
-    backgroundGradientTo: '#0091EA',
-    color: (opacity = 1) => `rgba(${255}, ${255}, ${255}, ${opacity})`,
-  },
-  {
-    backgroundColor: '#e26a00',
-    backgroundGradientFrom: '#fb8c00',
-    backgroundGradientTo: '#ffa726',
-    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    style: {
-      borderRadius: 16,
-    },
-  },
-  {
-    backgroundColor: '#b90602',
-    backgroundGradientFrom: '#e53935',
-    backgroundGradientTo: '#ef5350',
-    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    style: {
-      borderRadius: 16,
-    },
-  },
-  {
-    backgroundColor: '#ff3e03',
-    backgroundGradientFrom: '#ff3e03',
-    backgroundGradientTo: '#ff3e03',
-    color: (opacity = 1) => `rgba(${0}, ${0}, ${0}, ${opacity})`,
-  },
-];
+});
+
+const MyBezierLineChart = () => {
+  return (
+    <>
+      <Text style={styles.header}>YTD</Text>
+      <LineChart
+        data={{
+          labels: ['January', 'February', 'March', 'April'],
+          datasets: [
+            {
+              data: [
+                Math.random() * 100,
+                Math.random() * 100,
+                Math.random() * 100,
+                Math.random() * 100,
+                Math.random() * 100,
+                Math.random() * 100,
+              ],
+            },
+          ],
+        }}
+        width={Dimensions.get('window').width - 16} // from react-native
+        height={220}
+        yAxisLabel={'$'}
+        chartConfig={{
+          backgroundColor: '#1cc910',
+          backgroundGradientFrom: '#eff3ff',
+          backgroundGradientTo: '#efefef',
+          decimalPlaces: 2, // optional, defaults to 2dp
+          color: (opacity = 255) => `rgba(0, 0, 0, ${opacity})`,
+          style: {
+            borderRadius: 16,
+          },
+        }}
+        bezier
+        style={{
+          marginVertical: 8,
+          borderRadius: 16,
+        }}
+      />
+    </>
+  );
+};
 
 export default function BudgetScreen() {
   return (
@@ -99,33 +75,7 @@ export default function BudgetScreen() {
       <Screen title="Budget">
         <Heading size="lg">Existing Budgets</Heading>
         <ScrollView>
-
-          <Text> Budget 1 </Text>
-          {/* <LineChart
-            data={data}
-            width={width}
-            height={height}
-            chartConfig={chartConfigs}
-            style={graphStyle}
-          />
-
-          <Text> Budget 2 </Text>
-          <BarChart
-            width={width}
-            height={height}
-            data={data}
-            chartConfig={chartConfigs}
-            style={graphStyle}
-          />
-
-          <Text> Budget 3 </Text>
-          <ProgressChart
-            data={progressChartData}
-            width={width}
-            height={height}
-            chartConfig={chartConfigs}
-            style={graphStyle}
-          /> */}
+          <MyBezierLineChart />
         </ScrollView>
         <Button label="Add a Budget" />
       </Screen>
