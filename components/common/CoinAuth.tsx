@@ -6,33 +6,9 @@ import {
 } from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
-import { StyleSheet, TouchableOpacity, Text } from 'react-native';
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#A80421',
-    borderRadius: 12,
-    paddingHorizontal: 10,
-    paddingVertical: 12,
-    margin: 10,
-  },
-  text: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
-
-function Button({ onPress, label }: any) {
-  return (
-    <TouchableOpacity onPress={onPress} style={styles.button}>
-      <Text style={styles.text}>{label}</Text>
-    </TouchableOpacity>
-  );
-}
-// import { initializeApp } from 'firebase/app';
-// import { getAuth, signInWithCustomToken } from 'firebase/auth';
-import Constants from 'expo-constants';
+import { Alert } from 'react-native';
+import { getAuth, signInWithCustomToken } from 'firebase/auth';
+import Button from './Button';
 
 WebBrowser.maybeCompleteAuthSession();
 const CLIENT_ID =
@@ -43,25 +19,11 @@ const discovery = {
   tokenEndpoint: 'https://www.coinbase.com/oauth/authorize',
 };
 // for snack Web
-const redirectUri = 'https://marriageapp-bf2a0.firebaseapp.com';
+const redirectUri = 'https://marriage-backend.vercel.app/api/auth';
 // for Mobile
 // const redirectUri = makeRedirectUri({
 //   scheme: 'marriage'
 // });
-
-// add firebase config
-// const firebaseConfig = {
-//   apiKey: Constants.manifest.extra.apiKey,
-//   authDomain: Constants.manifest.extra.authDomain,
-//   projectId: Constants.manifest.extra.projectId,
-//   storageBucket: Constants.manifest.extra.storageBucket,
-//   messagingSenderId: Constants.manifest.extra.messagingSenderId,
-//   appId: Constants.manifest.extra.appId,
-//   databaseURL: Constants.manifest.extra.databaseURL,
-// };
-
-// initialize firebase
-// initializeApp(firebaseConfig);
 
 export default function CoinAuth() {
   const [request, response, promptAsync] = useAuthRequest(
@@ -82,20 +44,19 @@ export default function CoinAuth() {
 
   React.useEffect(() => {
     if (token) {
-      // initialize auth
-      // const auth = getAuth();
-      // signInWithCustomToken(auth, token)
-      //   .then((userCredential) => {
-      //     // Signed in
-      //     const user = userCredential.user;
-      //     // ...
-      //   })
-      //   .catch((error) => {
-      //     const errorCode = error.code;
-      //     const errorMessage = error.message;
-      //     // ...
-      //   });
-      console.log('My Token:', token.accessToken);
+      const auth = getAuth();
+      signInWithCustomToken(auth, token)
+        .then(userCredential => {
+          // Signed in
+          const { user } = userCredential;
+          console.log('My Token:', token.accessToken, 'My User:', user);
+          Alert.alert('Successfully Linked to  Coinbase!');
+        })
+        .catch(error => {
+          console.log('ERR', error);
+          const errorCode = error.code;
+          const errorMessage = error.message;
+        });
     }
   }, [token]);
 
