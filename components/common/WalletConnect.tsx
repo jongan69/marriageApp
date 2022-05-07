@@ -35,10 +35,10 @@ function Button({ onPress, label }: any) {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function WalletConnectButton() {
   const connector = useWalletConnect();
-  //   const navigation = useNavigation();
-
+  
   const connectWallet = React.useCallback(() => {
     return connector.connect();
   }, [connector]);

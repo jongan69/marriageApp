@@ -8,13 +8,12 @@ import WalletConnectButton from '../components/common/WalletConnect';
 
 export default function ProfileScreen() {
   const { user } = useContext(AuthContext);
-
   return (
     <Screen title={t('profile.title')}>
       <Heading size="lg">
         {t('profile.greeting', { name: user!.displayName || 'Joe' })}
       </Heading>
-
+      
       <Card>
         <CoinAuth />
       </Card>
