@@ -8,7 +8,7 @@
     "native-base",
     "typescript"
   ],
-  "author": "Vivo Xu <vivo@duapp.org>",
+  "author": "Jonathan Gan",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/duapp/expo-fire-native/issues"
