@@ -1,18 +1,33 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Button } from 'react-native';
+import { View, Button, Text } from 'react-native';
 import BottomTabBar from '../components/common/BottomTabBar';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import BudgetScreen from '../screens/BudgetScreen';
 import CaptureScreen from '../screens/CaptureScreen';
+import * as ImagePicker from 'expo-image-picker';
 
 const { Navigator, Screen } = createBottomTabNavigator();
+
+const pickImage = async () => {
+  // No permissions request is necessary for launching the image library
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1,
+  });
+};
 
 function ModalScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 30 }}>Upload or Capture Receipt</Text>
+      <Text style={{ fontSize: 30, marginBottom: 50 }}>
+        Upload or Capture Receipt
+      </Text>
+      <Button onPress={pickImage} title="Upload" />
+      <Button onPress={() => navigation.navigate('Capture')} title="Capture" />
       <Button onPress={() => navigation.goBack()} title="Dismiss" />
     </View>
   );

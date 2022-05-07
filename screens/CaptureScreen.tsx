@@ -14,10 +14,8 @@ import {
 import { Camera } from 'expo-camera';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
 import Clarifai from 'clarifai';
 import { useWalletConnect } from '@walletconnect/react-native-dapp';
-import * as ImagePicker from 'expo-image-picker';
 import tw from 'twrnc';
 
 const apiUrl = 'https://api.cloudinary.com/v1_1/dp8lp5b68/image/upload';
@@ -35,13 +33,6 @@ export default function ScannerScreen() {
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
 
-  const [bluntVerified, setBluntVerified] = useState(false);
-
-  const [items, setItems] = useState(null);
-  const dispatch = useDispatch();
-  const [scanned, setScanned] = useState(false);
-  const [aiData, setAiData] = useState(null);
-
   const clarifai = new Clarifai.App({
     apiKey: CLARIFAY_KEY,
   });
@@ -57,16 +48,6 @@ export default function ScannerScreen() {
 
   const onCameraReady = () => {
     setIsCameraReady(true);
-  };
-
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
   };
 
   const switchCamera = () => {
@@ -141,8 +122,9 @@ export default function ScannerScreen() {
                             method: 'POST',
                           },
                         );
-                        setBluntVerified(true);
-                        Alert.alert(`Minted NFT for ${connector.accounts[0]}!`);
+                        Alert.alert(
+                          `Minted NFT for ${connector.accounts[0]} of ${prediction.name}!`,
+                        );
                         navigation.navigate('Home');
                       } else {
                         // Anything else gets output as alert
@@ -151,7 +133,6 @@ export default function ScannerScreen() {
 
                       // All Predictions should be logged
                       console.log('PREDEICTION FROM CLARIFAI: ', prediction);
-                      setAiData(prediction);
                       return;
                     }
                   }
@@ -195,7 +176,7 @@ export default function ScannerScreen() {
           {isPreview && (
             <>
               <View style={{ alignSelf: 'center', padding: '80%' }}>
-                {!bluntVerified && (
+                {!isPreview && (
                   <ActivityIndicator size="large" color="#00ff00" />
                 )}
               </View>
@@ -223,10 +204,6 @@ export default function ScannerScreen() {
                 style={styles.capture}
               />
               <View style={styles.bottomButtonsContainer}>
-                <Button
-                  title="Pick an image from camera roll"
-                  onPress={pickImage}
-                />
                 {image && (
                   <Image
                     source={{ uri: image }}
