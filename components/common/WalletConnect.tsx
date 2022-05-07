@@ -6,7 +6,7 @@ import { useWalletConnect } from '@walletconnect/react-native-dapp';
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#5A45FF',
+    backgroundColor: '#A80421',
     color: '#FFFFFF',
     borderRadius: 12,
     paddingHorizontal: 10,
@@ -63,9 +63,9 @@ export default function WalletConnectButton() {
               borderColor: 'black',
             }}
           >
-            {shortenAddress(connector.accounts[0])}
+            Linked {shortenAddress(connector.accounts[0])}
           </Text>
-          <Button onPress={killSession} label="Log out" />
+          <Button onPress={killSession} label="Disconnect" />
         </>
       )}
     </>

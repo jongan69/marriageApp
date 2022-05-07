@@ -31,6 +31,7 @@ export default function BottomTabBar({ navigation, state }: BottomTabBarProps) {
           </Text>
         </Center>
       </Pressable>
+
       <Pressable
         opacity={state.index === 1 ? 1 : 0.5}
         py="3"
@@ -42,7 +43,30 @@ export default function BottomTabBar({ navigation, state }: BottomTabBarProps) {
             mb="1"
             as={
               <MaterialCommunityIcons
-                name={state.index === 1 ? 'account' : 'account-outline'}
+                name={state.index === 1 ? 'chart-donut-variant' : 'chart-donut'}
+              />
+            }
+            color="white"
+            size="sm"
+          />
+          <Text color="white" fontSize="12">
+            Budget
+          </Text>
+        </Center>
+      </Pressable>
+
+      <Pressable
+        opacity={state.index === 2 ? 1 : 0.5}
+        py="3"
+        flex={1}
+        onPress={() => select(2)}
+      >
+        <Center>
+          <Icon
+            mb="1"
+            as={
+              <MaterialCommunityIcons
+                name={state.index === 2 ? 'account' : 'account-outline'}
               />
             }
             color="white"

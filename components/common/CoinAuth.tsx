@@ -6,8 +6,30 @@ import {
 } from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
-import { Button } from 'react-native';
+import { StyleSheet, TouchableOpacity, Text } from 'react-native';
 
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#A80421',
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 12,
+    margin: 10,
+  },
+  text: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});
+
+function Button({ onPress, label }: any) {
+  return (
+    <TouchableOpacity onPress={onPress} style={styles.button}>
+      <Text style={styles.text}>{label}</Text>
+    </TouchableOpacity>
+  );
+}
 // import { initializeApp } from 'firebase/app';
 // import { getAuth, signInWithCustomToken } from 'firebase/auth';
 import Constants from 'expo-constants';
@@ -80,7 +102,7 @@ export default function CoinAuth() {
   return (
     <Button
       disabled={!request}
-      title="Login to Coinbase"
+      label="Login to Coinbase"
       onPress={() => {
         promptAsync();
       }}
