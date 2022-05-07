@@ -1,6 +1,8 @@
-# Expo + Firebase Auth + NativeBase + TypeScript Starter Kit
+# Marriage
 
-This is a boilerplate for starting an Expo project with Login/Register flows ready
+Backend:
+
+https://marriage-backend.vercel.app/
 
 ## Features
 
