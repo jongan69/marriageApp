@@ -1,5 +1,5 @@
 Arguments: 
-  /Users/jonathangan/.nvm/versions/node/v16.13.2/bin/node /usr/local/Cellar/yarn/1.22.18/libexec/bin/yarn.js add rnsvg
+  /Users/jonathangan/.nvm/versions/node/v16.13.2/bin/node /usr/local/Cellar/yarn/1.22.18/libexec/bin/yarn.js add @redux/toolkit
 
 PATH: 
   /Users/jonathangan/.nvm/versions/node/v16.13.2/bin:/Users/jonathangan/.local/share/solana/install/active_release/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/Library/Apple/usr/bin:/Users/jonathangan/.local/share/solana/install/active_release/bin:/Users/jonathangan/.cargo/bin
@@ -14,7 +14,7 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/rnsvg: Not found
+  Error: https://registry.yarnpkg.com/@redux%2ftoolkit: Not found
       at Request.params.callback [as _callback] (/usr/local/Cellar/yarn/1.22.18/libexec/lib/cli.js:66138:18)
       at Request.self.callback (/usr/local/Cellar/yarn/1.22.18/libexec/lib/cli.js:140883:22)
       at Request.emit (node:events:390:28)
@@ -58,6 +58,7 @@ npm manifest:
     "dependencies": {
       "@expo/vector-icons": "^13.0.0",
       "@react-native-async-storage/async-storage": "~1.17.3",
+      "@react-native-community/slider": "4.2.1",
       "@react-navigation/bottom-tabs": "^6.0.5",
       "@react-navigation/native": "^6.0.2",
       "@react-navigation/native-stack": "^6.1.0",
@@ -93,12 +94,14 @@ npm manifest:
       "react-is": "^18.1.0",
       "react-native": "0.68.1",
       "react-native-chart-kit": "^6.12.0",
+      "react-native-circular-progress": "^1.3.7",
       "react-native-dotenv": "^3.2.0",
       "react-native-gesture-handler": "~2.2.0",
       "react-native-get-random-values": "~1.8.0",
       "react-native-reanimated": "~2.8.0",
       "react-native-safe-area-context": "4.2.4",
       "react-native-screens": "~3.11.1",
+      "react-native-svg": "9.6.4",
       "react-native-svg-transformer": "^1.0.0",
       "react-native-web": "0.17.7",
       "react-redux": "^8.0.1",
@@ -2897,6 +2900,11 @@ Lockfile:
       strip-ansi "^5.2.0"
       sudo-prompt "^9.0.0"
       wcwidth "^1.0.1"
+  
+  "@react-native-community/slider@4.2.1":
+    version "4.2.1"
+    resolved "https://registry.yarnpkg.com/@react-native-community/slider/-/slider-4.2.1.tgz#8f1c8cf62de1bd91ce1e32585f7eb666f21e5025"
+    integrity sha512-6HUS5HbB9bvEN4GiwBlxECgPWQIugHE+kfnxqX2jHUl1SE57MRpw00m1qVs4hXtEPQndBl6mAQiGbKCOtLPVbg==
   
   "@react-native/assets@1.0.0":
     version "1.0.0"
@@ -10946,6 +10954,13 @@ Lockfile:
       lodash "^4.17.13"
       paths-js "^0.4.10"
       point-in-polygon "^1.0.1"
+  
+  react-native-circular-progress@^1.3.7:
+    version "1.3.7"
+    resolved "https://registry.yarnpkg.com/react-native-circular-progress/-/react-native-circular-progress-1.3.7.tgz#cc430fbc612bd01134a8fc9667be107591ae6959"
+    integrity sha512-Lpe4Sb0Sdfdxopl6sEc3ooKnwlK5j1nKGq5lgi9UKDFKO6iBAszeH+PiUt6acGSRbKMH1av+9G9ni9r/6T0+nQ==
+    dependencies:
+      prop-types "^15.7.2"
   
   react-native-codegen@^0.0.13:
     version "0.0.13"

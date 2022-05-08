@@ -7,7 +7,7 @@ import {
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
 import { Alert } from 'react-native';
-import { getAuth, signInWithCustomToken } from 'firebase/auth';
+import { getAuth, linkWithCredential } from 'firebase/auth';
 import Button from './Button';
 
 WebBrowser.maybeCompleteAuthSession();
@@ -16,14 +16,52 @@ const CLIENT_ID =
 // Endpoint
 const discovery = {
   authorizationEndpoint: 'https://www.coinbase.com/oauth/authorize',
-  tokenEndpoint: 'https://www.coinbase.com/oauth/authorize',
+  tokenEndpoint: 'https://api.coinbase.com/oauth/token',
 };
 // for snack Web
 const redirectUri = 'https://marriage-backend.vercel.app/api/auth';
 // for Mobile
 // const redirectUri = makeRedirectUri({
-//   scheme: 'marriage'
+//   scheme: 'marriage',
 // });
+function useAutoExchange(code?: string): State {
+  const [state, setState] = React.useReducer(
+    (state: State, action: Partial<State>) => ({ ...state, ...action }),
+    { token: null, exchangeError: null },
+  );
+  const isMounted = useMounted();
+
+  React.useEffect(() => {
+    if (!code) {
+      setState({ token: null, exchangeError: null });
+      return;
+    }
+    exchangeCodeAsync(
+      {
+        clientId: CLIENT_ID,
+        clientSecret:
+          '383127e0f873db7ec54826c922b3b15c9c56ffcb9da271bc607a4395711f408e',
+        code,
+        redirectUri,
+      },
+      discovery,
+    )
+      .then(token => {
+        if (isMounted.current) {
+          console.log('DATA FROM COINBASE:', token);
+          setState({ token, exchangeError: null });
+        }
+      })
+      .catch(exchangeError => {
+        if (isMounted.current) {
+          console.log('NO DATA FROM COINBASE');
+          setState({ exchangeError, token: null });
+        }
+      });
+  }, [code, isMounted]);
+
+  return state;
+}
 
 export default function CoinAuth() {
   const [request, response, promptAsync] = useAuthRequest(
@@ -45,17 +83,13 @@ export default function CoinAuth() {
   React.useEffect(() => {
     if (token) {
       const auth = getAuth();
-      signInWithCustomToken(auth, token)
-        .then(userCredential => {
-          // Signed in
-          const { user } = userCredential;
-          console.log('My Token:', token.accessToken, 'My User:', user);
-          Alert.alert('Successfully Linked to  Coinbase!');
+      linkWithCredential(auth.currentUser, token)
+        .then(usercred => {
+          const { user } = usercred;
+          console.log('Anonymous account successfully upgraded', user);
         })
         .catch(error => {
-          console.log('ERR', error);
-          const errorCode = error.code;
-          const errorMessage = error.message;
+          console.log('Error upgrading anonymous account', error);
         });
     }
   }, [token]);
@@ -79,43 +113,6 @@ type State = {
 // A hook to automatically exchange the auth token for an access token.
 // this should be performed in a server and not here in the application.
 // For educational purposes only:
-function useAutoExchange(code?: string): State {
-  const [state, setState] = React.useReducer(
-    (state: State, action: Partial<State>) => ({ ...state, ...action }),
-    { token: null, exchangeError: null },
-  );
-  const isMounted = useMounted();
-
-  React.useEffect(() => {
-    if (!code) {
-      setState({ token: null, exchangeError: null });
-      return;
-    }
-
-    exchangeCodeAsync(
-      {
-        clientId: CLIENT_ID,
-        clientSecret:
-          '383127e0f873db7ec54826c922b3b15c9c56ffcb9da271bc607a4395711f408e',
-        code,
-        redirectUri,
-      },
-      discovery,
-    )
-      .then(token => {
-        if (isMounted.current) {
-          setState({ token, exchangeError: null });
-        }
-      })
-      .catch(exchangeError => {
-        if (isMounted.current) {
-          setState({ exchangeError, token: null });
-        }
-      });
-  }, [code, isMounted]);
-
-  return state;
-}
 
 function useMounted() {
   const isMounted = React.useRef(true);

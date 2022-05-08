@@ -1,12 +1,13 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Button, Text } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import BottomTabBar from '../components/common/BottomTabBar';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import BudgetScreen from '../screens/BudgetScreen';
 import CaptureScreen from '../screens/CaptureScreen';
-import * as ImagePicker from 'expo-image-picker';
+import BudgetBuilder from '../screens/BudgetBuilder';
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
@@ -43,6 +44,11 @@ export default function MemberNavigator() {
       <Screen
         name="Modal"
         component={ModalScreen}
+        screenOptions={{ presentation: 'modal' }}
+      />
+      <Screen
+        name="BudgetBuilder"
+        component={BudgetBuilder}
         screenOptions={{ presentation: 'modal' }}
       />
     </Navigator>
