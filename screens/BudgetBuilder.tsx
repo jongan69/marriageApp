@@ -32,10 +32,6 @@ const styles = StyleSheet.create({
 });
 
 export default function BudgetBuilder(this: any) {
-  const [name, setName] = useState('');
-  const [amount, setAmount] = useState(0);
-  const [currency, setCurrency] = useState(null);
-
   return (
     <>
       <Screen title="Budget">
@@ -45,7 +41,6 @@ export default function BudgetBuilder(this: any) {
             <SliderForm />
           </View>
         </ScrollView>
-        <Button label="Add Budget" />
       </Screen>
     </>
   );

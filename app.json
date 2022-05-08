@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "marriageRNapp",
+    "name": "marriage budgeting",
     "slug": "marriageRNapp",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -19,16 +19,20 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.marriage"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.marriage"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
-    }
+    },
+    "description": "An app for budgeting using web3",
+    "githubUrl": "https://github.com/jongan69/marriageApp"
   }
 }

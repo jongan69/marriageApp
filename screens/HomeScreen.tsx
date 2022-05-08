@@ -4,6 +4,7 @@ import { useWalletConnect } from '@walletconnect/react-native-dapp';
 import { t } from '../utils';
 import Screen from '../components/common/Screen';
 import Button from '../components/common/Button';
+import getList from '../hooks/getNFTs';
 
 export default function HomeScreen({ navigation }) {
   const connector = useWalletConnect();
