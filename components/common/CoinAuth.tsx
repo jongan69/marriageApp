@@ -22,7 +22,7 @@ const discovery = {
 const redirectUri = 'https://marriage-backend.vercel.app/api/auth';
 // for Mobile
 // const redirectUri = makeRedirectUri({
-//   scheme: 'marriage',
+//   scheme: 'marriagebudgeting',
 // });
 function useAutoExchange(code?: string): State {
   const [state, setState] = React.useReducer(
@@ -82,15 +82,16 @@ export default function CoinAuth() {
 
   React.useEffect(() => {
     if (token) {
-      const auth = getAuth();
-      linkWithCredential(auth.currentUser, token)
-        .then(usercred => {
-          const { user } = usercred;
-          console.log('Anonymous account successfully upgraded', user);
-        })
-        .catch(error => {
-          console.log('Error upgrading anonymous account', error);
-        });
+      console.log('TOKEN DATA:', token);
+      // const auth = getAuth();
+      // linkWithCredential(auth.currentUser, token)
+      //   .then(usercred => {
+      //     const { user } = usercred;
+      //     console.log('Anonymous account successfully upgraded', user);
+      //   })
+      //   .catch(error => {
+      //     console.log('Error upgrading anonymous account', error);
+      //   });
     }
   }, [token]);
 

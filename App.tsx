@@ -11,7 +11,7 @@ import theme from './theme';
 import store from './reduxToolkit/store';
 
 LogBox.ignoreAllLogs();
-const SCHEME_FROM_APP_JSON = 'marriage';
+const SCHEME_FROM_APP_JSON = 'marriagebudgeting';
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
