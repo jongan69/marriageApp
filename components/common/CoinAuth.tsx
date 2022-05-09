@@ -12,16 +12,9 @@ import Button from './Button';
 
 WebBrowser.maybeCompleteAuthSession();
 const CLIENT_ID =
-  '3f70d8782f68479c5227c942c5d341306b3928b5e97951f1036725752a4757db';
+  '9764f0fa31a230a5d8f4c923cee2a7066d8ada4676faf300422fa49482ef1127';
 const CLIENT_SECRET =
-  'adb40022a4853a9d7207032962bf968819576a7ff15f6bca95a1ed6cb56d1e68';
-
-// Endpoint
-const discovery = {
-  authorizationEndpoint: 'https://www.coinbase.com/oauth/authorize',
-  tokenEndpoint: 'https://api.coinbase.com/oauth/token',
-  revocationEndpoint: 'https://api.coinbase.com/oauth/revoke',
-};
+  '5be10d9917e2b75802b6ab89fe196004fc9e4f63ba5a0706773c3484ab75d3e4';
 
 // for Expo Prod Web
 // const redirectUri = 'https://marriage-backend.vercel.app/api/auth';
@@ -31,8 +24,15 @@ const redirectUri = 'exp://192.168.1.141:19000/auth/';
 
 // for Mobile DeepLink
 // const redirectUri = makeRedirectUri({
-//   scheme: 'com.marriagebudgeting://',
+//   native: 'com.marriagebudgeting://',
 // });
+
+// Endpoint
+const discovery = {
+  authorizationEndpoint: 'https://www.coinbase.com/oauth/authorize',
+  tokenEndpoint: 'https://api.coinbase.com/oauth/token',
+  revocationEndpoint: 'https://api.coinbase.com/oauth/revoke',
+};
 
 // A hook to automatically exchange the auth token for an access token.
 // this should be performed in a server and not here in the application.
