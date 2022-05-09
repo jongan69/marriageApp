@@ -17,13 +17,14 @@ const CLIENT_ID =
 const discovery = {
   authorizationEndpoint: 'https://www.coinbase.com/oauth/authorize',
   tokenEndpoint: 'https://api.coinbase.com/oauth/token',
+  revocationEndpoint: 'https://api.coinbase.com/oauth/revoke',
 };
 // for Expo Local
 // const redirectUri = 'https://marriage-backend.vercel.app/api/auth';
 
 // for Mobile DeepLink
 const redirectUri = makeRedirectUri({
-  scheme: 'marriagebudgeting',
+  scheme: 'com.marriagebudgeting://',
 });
 
 function useAutoExchange(code?: string): State {
