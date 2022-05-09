@@ -7,25 +7,46 @@ import {
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
 import { Alert } from 'react-native';
-import { getAuth, linkWithCredential } from 'firebase/auth';
 import Button from './Button';
+// import { getAuth, linkWithCredential } from 'firebase/auth';
 
 WebBrowser.maybeCompleteAuthSession();
 const CLIENT_ID =
-  '9764f0fa31a230a5d8f4c923cee2a7066d8ada4676faf300422fa49482ef1127';
+  '3f70d8782f68479c5227c942c5d341306b3928b5e97951f1036725752a4757db';
+const CLIENT_SECRET =
+  'adb40022a4853a9d7207032962bf968819576a7ff15f6bca95a1ed6cb56d1e68';
+
 // Endpoint
 const discovery = {
   authorizationEndpoint: 'https://www.coinbase.com/oauth/authorize',
   tokenEndpoint: 'https://api.coinbase.com/oauth/token',
   revocationEndpoint: 'https://api.coinbase.com/oauth/revoke',
 };
-// for Expo Local
+
+// for Expo Prod Web
 // const redirectUri = 'https://marriage-backend.vercel.app/api/auth';
 
+// for Expo Web
+const redirectUri = 'exp://192.168.1.141:19000/auth/';
+
 // for Mobile DeepLink
-const redirectUri = makeRedirectUri({
-  scheme: 'com.marriagebudgeting://',
-});
+// const redirectUri = makeRedirectUri({
+//   scheme: 'com.marriagebudgeting://',
+// });
+
+// A hook to automatically exchange the auth token for an access token.
+// this should be performed in a server and not here in the application.
+// For educational purposes only:
+
+function useMounted() {
+  const isMounted = React.useRef(true);
+  React.useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+  return isMounted;
+}
 
 function useAutoExchange(code?: string): State {
   const [state, setState] = React.useReducer(
@@ -42,8 +63,7 @@ function useAutoExchange(code?: string): State {
     exchangeCodeAsync(
       {
         clientId: CLIENT_ID,
-        clientSecret:
-          '5be10d9917e2b75802b6ab89fe196004fc9e4f63ba5a0706773c3484ab75d3e4',
+        clientSecret: CLIENT_SECRET,
         code,
         redirectUri,
       },
@@ -51,13 +71,13 @@ function useAutoExchange(code?: string): State {
     )
       .then(token => {
         if (isMounted.current) {
-          console.log('DATA FROM COINBASE:', token);
+          Alert.alert('DATA FROM COINBASE:', JSON.stringify(token));
           setState({ token, exchangeError: null });
         }
       })
       .catch(exchangeError => {
         if (isMounted.current) {
-          console.log('NO DATA FROM COINBASE');
+          console.log('NO DATA FROM COINBASE: ', exchangeError, isMounted);
           setState({ exchangeError, token: null });
         }
       });
@@ -97,7 +117,6 @@ export default function CoinAuth() {
       //   });
     }
   }, [token]);
-
   return (
     <Button
       disabled={!request}
@@ -113,17 +132,3 @@ type State = {
   token: TokenResponse | null;
   exchangeError: Error | null;
 };
-
-// A hook to automatically exchange the auth token for an access token.
-// this should be performed in a server and not here in the application.
-// For educational purposes only:
-
-function useMounted() {
-  const isMounted = React.useRef(true);
-  React.useEffect(() => {
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
-  return isMounted;
-}
