@@ -12,18 +12,20 @@ import Button from './Button';
 
 WebBrowser.maybeCompleteAuthSession();
 const CLIENT_ID =
-  '6e0c4de527fcb700a9b2da87f58b0f372c705a5d6f5ffc0b1b3761a8f60749af';
+  '9764f0fa31a230a5d8f4c923cee2a7066d8ada4676faf300422fa49482ef1127';
 // Endpoint
 const discovery = {
   authorizationEndpoint: 'https://www.coinbase.com/oauth/authorize',
   tokenEndpoint: 'https://api.coinbase.com/oauth/token',
 };
-// for snack Web
-const redirectUri = 'https://marriage-backend.vercel.app/api/auth';
-// for Mobile
-// const redirectUri = makeRedirectUri({
-//   scheme: 'marriagebudgeting',
-// });
+// for Expo Local
+// const redirectUri = 'https://marriage-backend.vercel.app/api/auth';
+
+// for Mobile DeepLink
+const redirectUri = makeRedirectUri({
+  scheme: 'marriagebudgeting',
+});
+
 function useAutoExchange(code?: string): State {
   const [state, setState] = React.useReducer(
     (state: State, action: Partial<State>) => ({ ...state, ...action }),
@@ -40,7 +42,7 @@ function useAutoExchange(code?: string): State {
       {
         clientId: CLIENT_ID,
         clientSecret:
-          '383127e0f873db7ec54826c922b3b15c9c56ffcb9da271bc607a4395711f408e',
+          '5be10d9917e2b75802b6ab89fe196004fc9e4f63ba5a0706773c3484ab75d3e4',
         code,
         redirectUri,
       },
