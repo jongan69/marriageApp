@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
+import 'firebase/storage';
 
 import {
   FIREBASE_APP_ID,
@@ -22,8 +23,23 @@ const firebaseConfig = {
   messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
 };
 
+// const storage = getStorage(firebaseApp);
+// const database =  getDatabase(firebaseApp);
+
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
 export default firebase;
+function getStorage(firebaseApp: any) {
+  throw new Error('Function not implemented.');
+}
+
+function firebaseApp(firebaseApp: any) {
+  throw new Error('Function not implemented.');
+}
+
+function getDatabase(firebaseApp: any) {
+  throw new Error('Function not implemented.');
+}
+

@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Heading, Input, IInputProps, Icon, FormControl } from 'native-base';
 import { ScrollView, StyleSheet, TextInput, View, Text } from 'react-native';
-import { useField, useFormikContext } from 'formik';
 import Screen from '../components/common/Screen';
-import Button from '../components/common/Button';
 import SliderForm from '../components/common/SliderForm';
+import { AuthContext } from '../providers/AuthProvider';
+// import Button from '../components/common/Button';
+// import { useField, useFormikContext } from 'formik';
 
 const styles = StyleSheet.create({
   container: {
@@ -31,11 +32,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function BudgetBuilder(this: any) {
+export default function BudgetBuilder() {
+  const { user } = useContext(AuthContext);
+
   return (
     <>
       <Screen title="Budget">
-        <Heading size="lg">New Budget</Heading>
+        <Heading size="lg">{user?.displayName} Budgets</Heading>
         <ScrollView>
           <View style={styles.container}>
             <SliderForm />

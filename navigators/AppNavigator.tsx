@@ -9,7 +9,9 @@ function AppNavigator() {
     <AuthProvider>
       <NavigationContainer>
         <AuthContext.Consumer>
-          {({ user }) => (user ? <MemberNavigator /> : <GuestNavigator />)}
+          {({ user }) =>
+            user ? <MemberNavigator user={user} /> : <GuestNavigator />
+          }
         </AuthContext.Consumer>
       </NavigationContainer>
     </AuthProvider>

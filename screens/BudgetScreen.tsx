@@ -3,10 +3,19 @@ import { Text, Heading, Card } from 'native-base';
 import { ScrollView, Dimensions, StyleSheet } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { getDatabase, ref, set } from 'firebase/database';
 import { t } from '../utils';
 import Screen from '../components/common/Screen';
 import Button from '../components/common/Button';
 
+// function storeHighScore(user, score) {
+//   if (user != null) {
+//     const database = getDatabase();
+//     set(ref(db, `users/${user.uid}`), {
+//       highscore: score,
+//     });
+//   }
+// }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -98,8 +107,8 @@ export default function BudgetScreen({ navigation }) {
                 </>
               )}
             </AnimatedCircularProgress>
-            <Text>     </Text>
-            <Text>     </Text>
+            <Text> </Text>
+            <Text> </Text>
             <AnimatedCircularProgress
               size={100}
               width={8}

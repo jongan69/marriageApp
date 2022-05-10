@@ -34,11 +34,11 @@ function ModalScreen({ navigation }) {
   );
 }
 
-export default function MemberNavigator() {
+export default function MemberNavigator({ user }) {
   return (
     <Navigator screenOptions={{ headerShown: false }} tabBar={BottomTabBar}>
       <Screen name="Home" component={HomeScreen} />
-      <Screen name="Budget" component={BudgetScreen} />
+      <Screen name="Budget" component={BudgetScreen} user={user} />
       <Screen name="Profile" component={ProfileScreen} />
       <Screen name="Capture" component={CaptureScreen} />
       <Screen

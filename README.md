@@ -2,7 +2,7 @@
 
 Backend:
 
-https://marriage-backend.vercel.app/
+<https://marriage-backend.vercel.app/>
 
 ## Features
 
@@ -45,6 +45,10 @@ FIREBASE_MESSAGING_SENDER_ID="sender-id"
 Add Email/Password Sign-in provider in Firebase Authentication.
 
 ## Development
+
+`
+expo install react-native-svg@9.6.4
+`
 
 ### Getting Started
 
@@ -103,4 +107,5 @@ Package | Description
 `firebase` | Authentication
 `Yup` and `Formik` | Form and data validator
 `eslint`, `prettier`, `jest` | Productivity
+
 # marriageApp

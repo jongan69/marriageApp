@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Text, StyleSheet, View, TextInput, Alert } from 'react-native';
 import Slider from '@react-native-community/slider';
-import { getDatabase, ref, onValue, set } from 'firebase/database';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getStorage, ref, set } from 'firebase/storage';
 import Button from './Button';
+import { AuthContext } from '../../providers/AuthProvider';
 
 const styles = StyleSheet.create({
   container: {
@@ -30,37 +30,28 @@ const styles = StyleSheet.create({
 });
 
 const SliderForm = () => {
-  const [user, setUser] = useState(null);
+  const { user } = useContext(AuthContext);
   const [value, setValue] = useState(0);
   const [name, setName] = useState(null);
   const [description, setDescription] = useState(null);
   const [currency, setCurrency] = useState(null);
 
-  // const auth = getAuth();
-  // onAuthStateChanged(auth, user => {
-  //   if (user) {
-  //     // User is signed in, see docs for a list of available properties
-  //     // https://firebase.google.com/docs/reference/js/firebase.User
-  //     const { uid } = user;
-  //     setUser(uid);
-  //   }
-  //   console.log('NOT SIGNED IN');
-  // });
-
-  // function storeBudget(user, name, description, value, currency) {
-  //   const db = getDatabase();
-  //   const reference = ref(db, `users/${user}`);
-  //   set(reference, {
-  //     budget: { name, description, value, currency },
-  //   });
-  // }
+  function storeBudget() {
+    const db = getStorage();
+    set(ref(db, `users/${user?.uid}/Budgets`), {
+      name,
+      value,
+      description,
+      currency,
+    });
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.formLabel}> Create a Budget </Text>
       <View>
         <TextInput
-          placeholder="Name"
+          placeholder="Budget Name"
           placeholderTextColor="#000"
           style={styles.inputStyle}
           value={name}
@@ -68,7 +59,7 @@ const SliderForm = () => {
         />
 
         <TextInput
-          placeholder="Description"
+          placeholder="Budget Description"
           placeholderTextColor="#000"
           style={styles.inputStyle}
           value={description}
@@ -76,7 +67,7 @@ const SliderForm = () => {
         />
 
         <TextInput
-          placeholder="Currency"
+          placeholder="Budget Currency"
           placeholderTextColor="#000"
           style={styles.inputStyle}
           value={currency}
@@ -110,7 +101,7 @@ const SliderForm = () => {
         </Text>
         <Button
           label="Confirm"
-          // onPress={() => storeBudget(uid, name, description, value, currency)}
+          onPress={() => storeBudget(user, name, value, description, currency)}
         />
       </View>
     </View>
