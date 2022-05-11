@@ -12,6 +12,7 @@ export default function HomeScreen({ navigation }) {
     <Screen title={t('home.title')}>
       <Card>
         <Text>Welcome Home, log spending below</Text>
+
         {connector.connected && (
           <Card>
             <Text>WEB3 DATA </Text>
@@ -27,10 +28,12 @@ export default function HomeScreen({ navigation }) {
           </Card>
         )}
       </Card>
+
       <Button
         label="Add a receipt"
         onPress={() => navigation.navigate('Modal')}
       />
+
       <Card>
         <Text>List of transactional data</Text>
       </Card>

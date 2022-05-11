@@ -1,11 +1,9 @@
 import React, { useState, useContext } from 'react';
-import { Heading, Input, IInputProps, Icon, FormControl } from 'native-base';
+import { Heading } from 'native-base';
 import { ScrollView, StyleSheet, TextInput, View, Text } from 'react-native';
 import Screen from '../components/common/Screen';
 import SliderForm from '../components/common/SliderForm';
 import { AuthContext } from '../providers/AuthProvider';
-// import Button from '../components/common/Button';
-// import { useField, useFormikContext } from 'formik';
 
 const styles = StyleSheet.create({
   container: {
@@ -38,7 +36,7 @@ export default function BudgetBuilder() {
   return (
     <>
       <Screen title="Budget">
-        <Heading size="lg">{user?.displayName} Budgets</Heading>
+        <Heading size="lg">Building {user?.displayName}'s Budget</Heading>
         <ScrollView>
           <View style={styles.container}>
             <SliderForm />

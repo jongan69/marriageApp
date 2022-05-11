@@ -1,21 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Text, Heading, Card } from 'native-base';
-import { ScrollView, Dimensions, StyleSheet } from 'react-native';
+import { ScrollView, Dimensions, StyleSheet, Alert } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import { getDatabase, ref, set } from 'firebase/database';
-import { t } from '../utils';
+import 'firebase/firestore';
 import Screen from '../components/common/Screen';
 import Button from '../components/common/Button';
+import { AuthContext } from '../providers/AuthProvider';
+import firebase from '../services/firebase';
 
-// function storeHighScore(user, score) {
-//   if (user != null) {
-//     const database = getDatabase();
-//     set(ref(db, `users/${user.uid}`), {
-//       highscore: score,
-//     });
-//   }
-// }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -23,7 +16,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
-    padding: 10,
+    padding: 0,
   },
   header: {
     textAlign: 'center',
@@ -35,8 +28,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
-    padding: 20,
-    margin: 20,
     backgroundColor: '#FFF',
   },
 });
@@ -47,10 +38,30 @@ const SpendingChart = () => {
       <Text style={styles.header}>YTD</Text>
       <LineChart
         data={{
-          labels: ['January', 'February', 'March', 'April'],
+          labels: [
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'June',
+            'July',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec',
+          ],
           datasets: [
             {
               data: [
+                Math.random() * 100,
+                Math.random() * 100,
+                Math.random() * 100,
+                Math.random() * 100,
+                Math.random() * 100,
+                Math.random() * 100,
+                Math.random() * 100,
                 Math.random() * 100,
                 Math.random() * 100,
                 Math.random() * 100,
@@ -64,10 +75,13 @@ const SpendingChart = () => {
         width={Dimensions.get('window').width - 16} // from react-native
         height={220}
         yAxisLabel="$"
+        // horizontalLabelRotation={20}
+        verticalLabelRotation={-90}
         chartConfig={{
           backgroundColor: '#1cc910',
           backgroundGradientFrom: '#eff3ff',
           backgroundGradientTo: '#efefef',
+          strokeWidth: 2, // optional
           decimalPlaces: 2, // optional, defaults to 2dp
           color: (opacity = 255) => `rgba(0, 0, 0, ${opacity})`,
           style: {
@@ -85,45 +99,53 @@ const SpendingChart = () => {
 };
 
 export default function BudgetScreen({ navigation }) {
+  const { user } = useContext(AuthContext);
   const [goal, setGoal] = useState(10);
+  const [saved, setSaved] = useState();
+  const db = firebase.firestore();
+
+  async function getBudget() {
+    const datas = await db.collection('budgets').doc(user.uid).get();
+    console.log('DATAS: ', datas.data());
+    await setSaved(datas.data());
+    setGoal(10 / saved.budget);
+  }
+
   return (
     <>
       <Screen title="Budget">
         <Heading size="lg">Existing Budgets</Heading>
+        <Button label="Reload data" onPress={() => getBudget()} />
+        <Text>Total Amount($):</Text>
+        <Text>Total Debt($):</Text>
+        <Text>Total Assets($): </Text>
+
         <ScrollView>
-          <SpendingChart />
-          <Card style={styles.card}>
-            <AnimatedCircularProgress
-              size={100}
-              width={8}
-              fill={goal}
-              tintColor="#00e0ff"
-              backgroundColor="#3d5875"
-            >
-              {goal => (
-                <>
-                  <Text>Budget 1</Text>
-                  <Text>{goal}%</Text>
-                </>
-              )}
-            </AnimatedCircularProgress>
-            <Text> </Text>
-            <Text> </Text>
-            <AnimatedCircularProgress
-              size={100}
-              width={8}
-              fill={goal}
-              tintColor="#00e0ff"
-              backgroundColor="#3d5875"
-            >
-              {goal => (
-                <>
-                  <Text>Budget 2</Text>
-                  <Text>{goal}%</Text>
-                </>
-              )}
-            </AnimatedCircularProgress>
-          </Card>
+          {/* <Card style={styles.card}> */}
+          {saved && (
+            <>
+              <Card>
+                <SpendingChart />
+              </Card>
+              <Card style={styles.card}>
+                <AnimatedCircularProgress
+                  size={100}
+                  width={8}
+                  fill={goal}
+                  tintColor="#00e0ff"
+                  backgroundColor="#3d5875"
+                >
+                  {goal => (
+                    <>
+                      <Text>{saved?.name}</Text>
+                      <Text>{(10 / saved.budget) * 100}%</Text>
+                    </>
+                  )}
+                </AnimatedCircularProgress>
+              </Card>
+            </>
+          )}
+          {/* </Card> */}
         </ScrollView>
         <Button
           label="Create New Budget"

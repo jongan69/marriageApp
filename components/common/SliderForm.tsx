@@ -1,9 +1,10 @@
 import React, { useState, useContext } from 'react';
 import { Text, StyleSheet, View, TextInput, Alert } from 'react-native';
 import Slider from '@react-native-community/slider';
-import { getStorage, ref, set } from 'firebase/storage';
 import Button from './Button';
 import { AuthContext } from '../../providers/AuthProvider';
+import firebase from '../../services/firebase';
+import 'firebase/firestore';
 
 const styles = StyleSheet.create({
   container: {
@@ -31,19 +32,24 @@ const styles = StyleSheet.create({
 
 const SliderForm = () => {
   const { user } = useContext(AuthContext);
-  const [value, setValue] = useState(0);
-  const [name, setName] = useState(null);
-  const [description, setDescription] = useState(null);
-  const [currency, setCurrency] = useState(null);
+  const [budget, setBudget] = useState(0);
+  const [name, setName] = useState();
+  const [description, setDescription] = useState();
+  const [currency, setCurrency] = useState();
 
   function storeBudget() {
-    const db = getStorage();
-    set(ref(db, `users/${user?.uid}/Budgets`), {
-      name,
-      value,
-      description,
-      currency,
-    });
+    console.log('BUDGET DATA: ', user, name, budget, description, currency);
+    const db = firebase.firestore();
+    db.collection('budgets')
+      .doc(user.uid)
+      .set({
+        name,
+        budget,
+        description,
+        currency,
+        creators: [user.email],
+      });
+    Alert.alert('Budget Created!');
   }
 
   return (
@@ -54,8 +60,9 @@ const SliderForm = () => {
           placeholder="Budget Name"
           placeholderTextColor="#000"
           style={styles.inputStyle}
+          onChangeText={setName}
           value={name}
-          onValueChange={value => setName(value)}
+          // onValueChange={value => setName(value)}
         />
 
         <TextInput
@@ -63,7 +70,7 @@ const SliderForm = () => {
           placeholderTextColor="#000"
           style={styles.inputStyle}
           value={description}
-          onValueChange={value => setDescription(value)}
+          onChangeText={setDescription}
         />
 
         <TextInput
@@ -71,7 +78,7 @@ const SliderForm = () => {
           placeholderTextColor="#000"
           style={styles.inputStyle}
           value={currency}
-          onValueChange={value => setCurrency(value)}
+          onChangeText={setCurrency}
         />
 
         <Text style={{ marginTop: 16, color: '#fff', fontSize: 15 }}>
@@ -83,8 +90,8 @@ const SliderForm = () => {
           step={1}
           minimumValue={0}
           maximumValue={1000000}
-          value={value}
-          onValueChange={slideValue => setValue(slideValue)}
+          value={budget}
+          onValueChange={slideValue => setBudget(slideValue)}
           minimumTrackTintColor="#H9d3d3"
           maximumTrackTintColor="#FFF"
           thumbTintColor="#000"
@@ -97,12 +104,9 @@ const SliderForm = () => {
             justifyContent: 'center',
           }}
         >
-          ${value}
+          ${budget}
         </Text>
-        <Button
-          label="Confirm"
-          onPress={() => storeBudget(user, name, value, description, currency)}
-        />
+        <Button label="Confirm" onPress={() => storeBudget()} />
       </View>
     </View>
   );

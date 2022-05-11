@@ -20,14 +20,16 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.marriagebudgeting"
+      "bundleIdentifier": "com.marriagebudgeting",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.marriage"
+      "package": "com.marriage",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

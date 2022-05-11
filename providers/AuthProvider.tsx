@@ -32,6 +32,7 @@ export function AuthProvider(props: PropsWithChildren<unknown>) {
           phoneNumber,
           isAdmin: false,
         };
+
         // read claims if necessary
         setAuthPending(true);
         result.getIdTokenResult().then(({ claims }) => {

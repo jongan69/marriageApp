@@ -94,6 +94,7 @@ export default function ScannerScreen() {
                   if (concepts && concepts.length > 0) {
                     for (const prediction of concepts) {
                       if (prediction.name) {
+                        
                         fetch(
                           'https://thirdweb-nextjs-minting-api.vercel.app/api/mint',
                           {

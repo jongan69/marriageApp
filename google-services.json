@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "483477588142",
+    "firebase_url": "https://marriageapp-bf2a0-default-rtdb.firebaseio.com",
+    "project_id": "marriageapp-bf2a0",
+    "storage_bucket": "marriageapp-bf2a0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:483477588142:android:0f2cffbe82baec7799453f",
+        "android_client_info": {
+          "package_name": "com.marriagebudgeting"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "483477588142-22a0q9cmo9cmi7bcoba8lvvl4887v7r5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBm2nTaUovTSGBK7OeBrI1CcK7X3hYqfbw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "483477588142-22a0q9cmo9cmi7bcoba8lvvl4887v7r5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "483477588142-klcnqnsntgs03b3g6mtu40r7eq2m4tve.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.marriagebudgeting"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
