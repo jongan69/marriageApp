@@ -1,4 +1,5 @@
-import React, { useState, useContext } from 'react';
+/* eslint-disable no-console */
+import React, { useState, useContext, useEffect } from 'react';
 import { Text, Heading, Card } from 'native-base';
 import { ScrollView, Dimensions, StyleSheet, Alert } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
@@ -100,33 +101,35 @@ const SpendingChart = () => {
 
 export default function BudgetScreen({ navigation }) {
   const { user } = useContext(AuthContext);
-  const [goal, setGoal] = useState(10);
   const [saved, setSaved] = useState();
+  const [goal, setGoal] = useState(0);
   const db = firebase.firestore();
 
-  async function getBudget() {
-    const datas = await db.collection('budgets').doc(user.uid).get();
-    console.log('DATAS: ', datas.data());
-    await setSaved(datas.data());
-    setGoal(10 / saved.budget);
-  }
+  useEffect(() => {
+    async function fetchData() {
+      const datas = await db.collection('budgets').doc(user?.uid).get();
+      console.log('DATAS: ', datas.data());
+      setSaved(datas?.data());
+      setGoal(100 / saved.budget);
+    }
+    fetchData();
+  }, [user]);
 
   return (
     <>
       <Screen title="Budget">
         <Heading size="lg">Existing Budgets</Heading>
-        <Button label="Reload data" onPress={() => getBudget()} />
         <Text>Total Amount($):</Text>
         <Text>Total Debt($):</Text>
         <Text>Total Assets($): </Text>
 
         <ScrollView>
-          {/* <Card style={styles.card}> */}
-          {saved && (
+          {saved && goal != 0 && (
             <>
               <Card>
                 <SpendingChart />
               </Card>
+
               <Card style={styles.card}>
                 <AnimatedCircularProgress
                   size={100}
@@ -138,14 +141,13 @@ export default function BudgetScreen({ navigation }) {
                   {goal => (
                     <>
                       <Text>{saved?.name}</Text>
-                      <Text>{(10 / saved.budget) * 100}%</Text>
+                      <Text>{JSON.stringify(goal)}%</Text>
                     </>
                   )}
                 </AnimatedCircularProgress>
               </Card>
             </>
           )}
-          {/* </Card> */}
         </ScrollView>
         <Button
           label="Create New Budget"

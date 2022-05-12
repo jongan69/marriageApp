@@ -105,16 +105,28 @@ export default function CoinAuth() {
 
   React.useEffect(() => {
     if (token) {
-      console.log('TOKEN DATA:', token);
-      // const auth = getAuth();
-      // linkWithCredential(auth.currentUser, token)
-      //   .then(usercred => {
-      //     const { user } = usercred;
-      //     console.log('Anonymous account successfully upgraded', user);
-      //   })
-      //   .catch(error => {
-      //     console.log('Error upgrading anonymous account', error);
-      //   });
+      try {
+        console.log('TOKEN DATA:', token);
+        fetch('https://api.coinbase.com/v2/accounts', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token?.accessToken}`,
+          },
+        }).then(async result => {
+          const balances = await result.json();
+          // Alert.alert('DATA:', balances.data[]);
+          const balanceData = [];
+          console.log('BALANCES: ');
+          balances.data.forEach((item, index) => {
+            if (item) {
+              console.log('Item: ', item.id, 'at index', index);
+              balanceData.push({ Currency: item });
+            }
+          });
+        });
+      } catch {
+        console.log('No data');
+      }
     }
   }, [token]);
   return (
