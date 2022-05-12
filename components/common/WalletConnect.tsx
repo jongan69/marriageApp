@@ -1,8 +1,9 @@
-import * as React from 'react';
-import { Text, TouchableOpacity, StyleSheet, View } from 'react-native';
+import React, { useContext } from 'react';
+import { Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useWalletConnect } from '@walletconnect/react-native-dapp';
-// import { useNavigation } from '@react-navigation/native';
-// import { useThemeColor } from "./Themed";
+import { AuthContext } from '../../providers/AuthProvider';
+import firebase from '../../services/firebase';
+import 'firebase/firestore';
 
 const styles = StyleSheet.create({
   button: {
@@ -37,8 +38,21 @@ function Button({ onPress, label }: any) {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function WalletConnectButton() {
+  const { user } = useContext(AuthContext);
   const connector = useWalletConnect();
-  
+
+  async function storeAccounts() {
+    console.log('ACCOUNT DATA: ', connector.accounts[0]);
+    const db = firebase.firestore();
+    db.collection(`Users`)
+      .doc(`${user?.uid}`)
+      .set(
+        { accounts: { WalletConnect: connector.accounts[0] } },
+        { merge: true },
+      );
+    Alert.alert('Wallet Linked!');
+  }
+
   const connectWallet = React.useCallback(() => {
     return connector.connect();
   }, [connector]);
@@ -47,6 +61,10 @@ export default function WalletConnectButton() {
     // navigation.navigate('Welcome')
     return connector.killSession();
   }, [connector]);
+
+  if (connector.accounts[0]) {
+    storeAccounts(connector.accounts[0]);
+  }
 
   return (
     <>
@@ -65,7 +83,7 @@ export default function WalletConnectButton() {
           >
             Linked {shortenAddress(connector.accounts[0])}
           </Text>
-          <Button onPress={killSession} label="Disconnect" />
+          <Button onPress={killSession} label="Disconnect Web3 Wallet" />
         </>
       )}
     </>

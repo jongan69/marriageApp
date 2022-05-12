@@ -5,9 +5,12 @@ import {
   useAuthRequest,
 } from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
-import * as React from 'react';
+import React, { useContext } from 'react';
 import { Alert } from 'react-native';
+import firebase from '../../services/firebase';
+import { AuthContext } from '../../providers/AuthProvider';
 import Button from './Button';
+import 'firebase/firestore';
 // import { getAuth, linkWithCredential } from 'firebase/auth';
 
 WebBrowser.maybeCompleteAuthSession();
@@ -87,6 +90,7 @@ function useAutoExchange(code?: string): State {
 }
 
 export default function CoinAuth() {
+  const { user } = useContext(AuthContext);
   const [request, response, promptAsync] = useAuthRequest(
     {
       clientId: CLIENT_ID,
@@ -116,19 +120,28 @@ export default function CoinAuth() {
           const balances = await result.json();
           // Alert.alert('DATA:', balances.data[]);
           const balanceData = [];
-          console.log('BALANCES: ');
+          console.log('ADDING ACCOUNT: ');
           balances.data.forEach((item, index) => {
             if (item) {
               console.log('Item: ', item.id, 'at index', index);
-              balanceData.push({ Currency: item });
+              balanceData.push({ [item.balance.currency]: item });
             }
           });
+          function storeAccounts() {
+            console.log('ACCOUNT DATA: ', balanceData);
+            const db = firebase.firestore();
+            db.collection(`Users`)
+              .doc(`${user?.uid}`)
+              .set({ accounts: { Coinbase: balanceData } }, { merge: true });
+            Alert.alert('Coinbase Accounts Linked!');
+          }
+          storeAccounts();
         });
       } catch {
         console.log('No data');
       }
     }
-  }, [token]);
+  }, [token, user]);
   return (
     <Button
       disabled={!request}

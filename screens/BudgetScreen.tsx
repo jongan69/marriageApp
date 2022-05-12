@@ -1,7 +1,16 @@
 /* eslint-disable no-console */
 import React, { useState, useContext, useEffect } from 'react';
 import { Text, Heading, Card } from 'native-base';
-import { ScrollView, Dimensions, StyleSheet, Alert } from 'react-native';
+import {
+  SafeAreaView,
+  ScrollView,
+  Dimensions,
+  StyleSheet,
+  FlatList,
+  Alert,
+  View,
+  ActivityIndicator,
+} from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import 'firebase/firestore';
@@ -30,6 +39,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     backgroundColor: '#FFF',
+  },
+  card2: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFF',
+  },
+  item: {
+    padding: 20,
+    fontSize: 15,
+    marginTop: 5,
   },
 });
 
@@ -101,58 +120,114 @@ const SpendingChart = () => {
 
 export default function BudgetScreen({ navigation }) {
   const { user } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState();
   const [goal, setGoal] = useState(0);
   const db = firebase.firestore();
 
+  function BudgetRender() {
+    return (
+      <>
+        <FlatList
+          data={saved}
+          renderItem={saved?.forEach((item, index) => {
+            <Text style={styles.item}>{item.index}</Text>;
+          })}
+          keyExtractor={item.name}
+        />
+      </>
+    );
+  }
+
   useEffect(() => {
     async function fetchData() {
-      const datas = await db.collection('budgets').doc(user?.uid).get();
-      console.log('DATAS: ', datas.data());
-      setSaved(datas?.data());
-      setGoal(100 / saved.budget);
+      setLoading(true);
+      const Budgetdatas = await db
+        .collection(`Budgets`)
+        .get()
+        .then(function (querySnapshot) {
+          querySnapshot.forEach(function (doc) {
+            // doc.data() is never undefined for query doc snapshots
+            // console.log(doc.id, ' => ', doc.data().creators);
+            const creatorsData = doc.data().creators;
+            const data = [];
+            creatorsData.forEach((item, index) => {
+              if (item === user?.uid) {
+                console.log('Creator ID Matched', doc.data());
+                data.push([doc.data()]);
+              }
+            });
+            setSaved(data);
+            // setGoal(100 / saved.budget);
+          });
+        });
     }
     fetchData();
-  }, [user]);
+    setLoading(false);
+  }, [db, user]);
 
   return (
     <>
       <Screen title="Budget">
-        <Heading size="lg">Existing Budgets</Heading>
-        <Text>Total Amount($):</Text>
-        <Text>Total Debt($):</Text>
-        <Text>Total Assets($): </Text>
-
-        <ScrollView>
-          {saved && goal != 0 && (
+        <View>
+          {loading && <ActivityIndicator size="large" />}
+          {!loading && (
             <>
-              <Card>
-                <SpendingChart />
+              <Heading size="lg">Assets</Heading>
+              <Card style={styles.card2}>
+                <Text>Number of Accounts:</Text>
+                <Text>Total Amount($):</Text>
+                <Text>Total Debt($):</Text>
+                <Text>Total Assets($): </Text>
               </Card>
+              {/* <Text>Demo {JSON.stringify(saved[0])}</Text> */}
+              {/* {BudgetRender} */}
+              <ScrollView>
+                {/* {saved?.forEach((item, index) => {
+            <Text key={index}>{item}</Text>;
+          })} */}
 
-              <Card style={styles.card}>
-                <AnimatedCircularProgress
-                  size={100}
-                  width={8}
-                  fill={goal}
-                  tintColor="#00e0ff"
-                  backgroundColor="#3d5875"
-                >
-                  {goal => (
-                    <>
-                      <Text>{saved?.name}</Text>
-                      <Text>{JSON.stringify(goal)}%</Text>
-                    </>
+                {saved && goal !== 0 && (
+                  <>
+                    <Card>
+                      <SpendingChart />
+                    </Card>
+
+                    <Card style={styles.card}>
+                      <AnimatedCircularProgress
+                        size={100}
+                        width={8}
+                        fill={goal}
+                        tintColor="#00e0ff"
+                        backgroundColor="#3d5875"
+                      >
+                        {goal => (
+                          <>
+                            <Text>{saved?.name}</Text>
+                            <Text>{JSON.stringify(goal)}%</Text>
+                          </>
+                        )}
+                      </AnimatedCircularProgress>
+                    </Card>
+                  </>
+                )}
+              </ScrollView>
+              <Card>
+                <FlatList
+                  data={saved}
+                  renderItem={item => (
+                    <Text style={styles.item}>{item.budget}</Text>
                   )}
-                </AnimatedCircularProgress>
+                  keyExtractor={index => index}
+                />
               </Card>
+              <Button
+                label="Create New Budget"
+                onPress={() => navigation.navigate('BudgetBuilder')}
+              />
             </>
           )}
-        </ScrollView>
-        <Button
-          label="Create New Budget"
-          onPress={() => navigation.navigate('BudgetBuilder')}
-        />
+        </View>
       </Screen>
     </>
   );

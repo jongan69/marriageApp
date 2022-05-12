@@ -40,15 +40,13 @@ const SliderForm = () => {
   function storeBudget() {
     console.log('BUDGET DATA: ', user, name, budget, description, currency);
     const db = firebase.firestore();
-    db.collection('budgets')
-      .doc(user?.uid)
-      .set({
-        name,
-        budget,
-        description,
-        currency,
-        creators: [user?.email],
-      });
+    db.collection(`Budgets`).add({
+      name,
+      budget,
+      description,
+      currency,
+      creators: [user?.uid],
+    });
     Alert.alert('Budget Created!');
   }
 
