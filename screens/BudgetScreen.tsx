@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import React, { useState, useContext, useEffect } from 'react';
-import { Text, Heading, Card } from 'native-base';
+import { Text, Heading } from 'native-base';
+import { Card } from 'react-native-elements';
 import {
   SafeAreaView,
   ScrollView,
@@ -121,28 +122,60 @@ const SpendingChart = () => {
 export default function BudgetScreen({ navigation }) {
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
-  const [saved, setSaved] = useState();
+  const [saved, setSaved] = useState([]);
   const [goal, setGoal] = useState(0);
   const db = firebase.firestore();
+  const screenWidth = Math.round(Dimensions.get('window').width);
 
   function BudgetRender() {
     return (
-      <>
-        <FlatList
-          data={saved}
-          renderItem={saved?.forEach((item, index) => {
-            <Text style={styles.item}>{item.index}</Text>;
-          })}
-          keyExtractor={item.name}
-        />
-      </>
+      <FlatList
+        horizontal
+        data={saved}
+        renderItem={({ item: budgets, index }) => {
+          return (
+            <Card
+              // title={budget.name}
+              // image={{ uri: budget.imageUrl }}
+              containerStyle={{
+                padding: 20,
+                alignItems: 'center',
+                justifyContent: 'center',
+                maxWidth: screenWidth / 2,
+              }}
+            >
+              <AnimatedCircularProgress
+                size={100}
+                width={8}
+                fill={0}
+                tintColor="#00e0ff"
+                backgroundColor="#3d5875"
+              >
+                {() => (
+                  <Text>
+                    {budgets.name} {budgets.budget} {budgets.currency}
+                  </Text>
+                )}
+              </AnimatedCircularProgress>
+              <Text style={{ marginBottom: 10 }}>
+                Description: {budgets.description}
+              </Text>
+              <Text style={{ marginBottom: 0 }}>
+                Creators: {budgets.creators}
+              </Text>
+            </Card>
+          );
+        }}
+        keyExtractor={(item, index) => index}
+      />
     );
   }
 
   useEffect(() => {
-    async function fetchData() {
+    function fetchData() {
       setLoading(true);
-      const Budgetdatas = await db
+      const data = [];
+      const Budgetdatas = db
         .collection(`Budgets`)
         .get()
         .then(function (querySnapshot) {
@@ -150,16 +183,16 @@ export default function BudgetScreen({ navigation }) {
             // doc.data() is never undefined for query doc snapshots
             // console.log(doc.id, ' => ', doc.data().creators);
             const creatorsData = doc.data().creators;
-            const data = [];
-            creatorsData.forEach((item, index) => {
+            creatorsData.forEach(item => {
               if (item === user?.uid) {
-                console.log('Creator ID Matched', doc.data());
-                data.push([doc.data()]);
+                // console.log('Creator ID Matched', doc.data());
+                data.push({ name: doc.data().name, description: doc.data().description, currency: doc.data().currency, budget: doc.data().budget, creators: doc.data().creators });
               }
             });
-            setSaved(data);
             // setGoal(100 / saved.budget);
           });
+          console.log('DATA is', ...data);
+          setSaved([...data]);
         });
     }
     fetchData();
@@ -180,13 +213,7 @@ export default function BudgetScreen({ navigation }) {
                 <Text>Total Debt($):</Text>
                 <Text>Total Assets($): </Text>
               </Card>
-              {/* <Text>Demo {JSON.stringify(saved[0])}</Text> */}
-              {/* {BudgetRender} */}
               <ScrollView>
-                {/* {saved?.forEach((item, index) => {
-            <Text key={index}>{item}</Text>;
-          })} */}
-
                 {saved && goal !== 0 && (
                   <>
                     <Card>
@@ -212,15 +239,7 @@ export default function BudgetScreen({ navigation }) {
                   </>
                 )}
               </ScrollView>
-              <Card>
-                <FlatList
-                  data={saved}
-                  renderItem={item => (
-                    <Text style={styles.item}>{item.budget}</Text>
-                  )}
-                  keyExtractor={index => index}
-                />
-              </Card>
+              {BudgetRender()}
               <Button
                 label="Create New Budget"
                 onPress={() => navigation.navigate('BudgetBuilder')}

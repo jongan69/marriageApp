@@ -80,7 +80,7 @@ export default function ProfileScreen() {
                     <Text style={styles.item}>{JSON.stringify(Object.entries(cbAccounts[item.index])[0][1].name)} : {JSON.stringify(Object.entries(cbAccounts[item.index])[0][0])}</Text>
                     </>
                   )}
-                  keyExtractor={item => item?.index}
+                  keyExtractor={(item,index) => index}
                 />
               </>
             ) : (

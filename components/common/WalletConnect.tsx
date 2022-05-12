@@ -50,7 +50,6 @@ export default function WalletConnectButton() {
         { accounts: { WalletConnect: connector.accounts[0] } },
         { merge: true },
       );
-    Alert.alert('Wallet Linked!');
   }
 
   const connectWallet = React.useCallback(() => {
@@ -64,6 +63,7 @@ export default function WalletConnectButton() {
 
   if (connector.accounts[0]) {
     storeAccounts(connector.accounts[0]);
+    Alert.alert('Wallet Linked!');
   }
 
   return (
