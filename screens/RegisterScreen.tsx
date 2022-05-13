@@ -11,12 +11,14 @@ interface RegisterFormValue {
   displayName: string;
   email: string;
   password: string;
+  balance: number;
 }
 
 const initialValues: RegisterFormValue = {
   displayName: '',
   email: '',
   password: '',
+  balance: 0,
 };
 
 const schema = Yup.object().shape({

@@ -42,7 +42,7 @@ export default function WalletConnectButton() {
   const connector = useWalletConnect();
 
   async function storeAccounts() {
-    console.log('ACCOUNT DATA: ', connector.accounts[0]);
+    console.log('WALLET ACCOUNT DATA: ', connector.accounts[0]);
     const db = firebase.firestore();
     db.collection(`Users`)
       .doc(`${user?.uid}`)
@@ -61,9 +61,9 @@ export default function WalletConnectButton() {
     return connector.killSession();
   }, [connector]);
 
-  if (connector.accounts[0]) {
+  if (connector.accounts[0] && user !== null) {
     storeAccounts(connector.accounts[0]);
-    Alert.alert('Wallet Linked!');
+    // Alert.alert('Wallet Linked!');
   }
 
   return (

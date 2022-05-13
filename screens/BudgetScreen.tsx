@@ -186,7 +186,13 @@ export default function BudgetScreen({ navigation }) {
             creatorsData.forEach(item => {
               if (item === user?.uid) {
                 // console.log('Creator ID Matched', doc.data());
-                data.push({ name: doc.data().name, description: doc.data().description, currency: doc.data().currency, budget: doc.data().budget, creators: doc.data().creators });
+                data.push({
+                  name: doc.data().name,
+                  description: doc.data().description,
+                  currency: doc.data().currency,
+                  budget: doc.data().budget,
+                  creators: doc.data().creators,
+                });
               }
             });
             // setGoal(100 / saved.budget);
@@ -240,6 +246,14 @@ export default function BudgetScreen({ navigation }) {
                 )}
               </ScrollView>
               {BudgetRender()}
+              <Button
+                label="Reload Budgets"
+                onPress={() =>
+                  useEffect(() => {
+                    fetchData();
+                  })
+                }
+              />
               <Button
                 label="Create New Budget"
                 onPress={() => navigation.navigate('BudgetBuilder')}

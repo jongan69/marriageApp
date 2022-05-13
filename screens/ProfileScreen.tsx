@@ -22,6 +22,9 @@ const styles = StyleSheet.create({
     padding: 20,
     flex: 1,
   },
+  list: {
+    paddingBottom: 30,
+  },
   item: {
     padding: 10,
     fontSize: 15,
@@ -38,26 +41,32 @@ export default function ProfileScreen() {
   const [wc, setWc] = useState(false);
   const [accounts, setAccounts] = useState();
   const [cbAccounts, setCbAccounts] = useState();
+  const [wcAccounts, setwcAccounts] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
-      setLoading(true);
-      const Accountdatas = await db
-        .collection(`Users`)
-        .doc(`${user?.uid}`)
-        .get();
-      console.log('Account Datas', Accountdatas.data().accounts);
-      const CBresult = Accountdatas.data().accounts.hasOwnProperty('Coinbase');
-      const WCresult =
-        Accountdatas.data().accounts.hasOwnProperty('WalletConnect');
-      setCb(CBresult);
-      setWc(WCresult);
-      setAccounts(Accountdatas.data().accounts);
-      setCbAccounts(Accountdatas.data().accounts.Coinbase);
+      if (user !== undefined) {
+        setLoading(true);
+        const Accountdatas = await db
+          .collection(`Users`)
+          .doc(`${user?.uid}`)
+          .get();
+        console.log('Account Datas', Accountdatas?.data()?.accounts);
+        const CBresult =
+          Accountdatas?.data()?.accounts?.hasOwnProperty('Coinbase');
+        const WCresult =
+          Accountdatas?.data()?.accounts?.hasOwnProperty('WalletConnect');
+        setCb(CBresult);
+        setWc(WCresult);
+        setAccounts(Accountdatas.data().accounts);
+        setCbAccounts(Accountdatas.data().accounts.Coinbase);
+        setwcAccounts([Accountdatas.data().accounts.WalletConnect]);
+      }
     }
+
     fetchData();
     setLoading(false);
-  }, [db, user]);
+  }, [db, setwcAccounts, user]);
 
   return (
     <Screen title={t('profile.title')}>
@@ -72,16 +81,43 @@ export default function ProfileScreen() {
           <SafeAreaView style={styles.container}>
             {accounts !== null ? (
               <>
-                <Text> Connected Accounts: </Text>
-                <FlatList
-                  data={cbAccounts}
-                  renderItem={item => (
-                    <>
-                    <Text style={styles.item}>{JSON.stringify(Object.entries(cbAccounts[item.index])[0][1].name)} : {JSON.stringify(Object.entries(cbAccounts[item.index])[0][0])}</Text>
-                    </>
-                  )}
-                  keyExtractor={(item,index) => index}
-                />
+                <Text> Connected Wallets: </Text>
+                {wcAccounts && (
+                  <FlatList
+                    style={styles.list}
+                    data={wcAccounts}
+                    renderItem={item => (
+                      <>
+                        <Text style={styles.item}>
+                          Wallet Connect: {JSON.stringify(wcAccounts)}
+                        </Text>
+                      </>
+                    )}
+                    keyExtractor={index => index}
+                  />
+                )}
+
+                <Text> Connected Coinbase Accpunts: </Text>
+                {cbAccounts && (
+                  <FlatList
+                    style={styles.list}
+                    data={cbAccounts}
+                    renderItem={item => (
+                      <>
+                        <Text style={styles.item}>
+                          {JSON.stringify(
+                            Object.entries(cbAccounts[item.index])[0][1].name,
+                          )}{' '}
+                          :{' '}
+                          {JSON.stringify(
+                            Object.entries(cbAccounts[item.index])[0][0],
+                          )}
+                        </Text>
+                      </>
+                    )}
+                    keyExtractor={(item, index) => index}
+                  />
+                )}
               </>
             ) : (
               <Text> no linked accounts </Text>
@@ -91,7 +127,7 @@ export default function ProfileScreen() {
       )}
 
       <VStack flex={1} justifyContent="center">
-        {!cb && <CoinAuth />}
+        <CoinAuth />
         <BankAuth />
         <WalletConnectButton />
         <Button

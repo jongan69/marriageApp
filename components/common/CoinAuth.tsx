@@ -5,7 +5,7 @@ import {
   useAuthRequest,
 } from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Alert } from 'react-native';
 import firebase from '../../services/firebase';
 import { AuthContext } from '../../providers/AuthProvider';
@@ -91,6 +91,7 @@ function useAutoExchange(code?: string): State {
 
 export default function CoinAuth() {
   const { user } = useContext(AuthContext);
+  const [coinData, setCoinData] = useState();
   const [request, response, promptAsync] = useAuthRequest(
     {
       clientId: CLIENT_ID,
@@ -136,6 +137,7 @@ export default function CoinAuth() {
             Alert.alert('Coinbase Accounts Linked!');
           }
           storeAccounts();
+          setCoinData(balanceData);
         });
       } catch {
         console.log('No data');
@@ -143,13 +145,28 @@ export default function CoinAuth() {
     }
   }, [token, user]);
   return (
-    <Button
-      disabled={!request}
-      label="Login to Coinbase"
-      onPress={() => {
-        promptAsync();
-      }}
-    />
+    <>
+      {/* {coinData?.length > 0 && (
+        <Button
+          disabled={!request}
+          label="Logout of Coinbase"
+          onPress={() => {
+            promptAsync();
+          }}
+        />
+      )} */}
+      {coinData?.length > 0 ? (
+        <Button label="Logout of Coinbase" />
+      ) : (
+        <Button
+          disabled={!request}
+          label="Login to Coinbase"
+          onPress={() => {
+            promptAsync();
+          }}
+        />
+      )}
+    </>
   );
 }
 
