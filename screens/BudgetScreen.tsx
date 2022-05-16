@@ -123,9 +123,52 @@ export default function BudgetScreen({ navigation }) {
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState([]);
+  const [accountData, setAccountData] = useState();
   const [goal, setGoal] = useState(0);
   const db = firebase.firestore();
   const screenWidth = Math.round(Dimensions.get('window').width);
+
+  function fetchBudgetData() {
+    setLoading(true);
+    const data = [];
+    const Budgetdatas = db
+      .collection(`Budgets`)
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          // doc.data() is never undefined for query doc snapshots
+          // console.log(doc.id, ' => ', doc.data().creators);
+          const creatorsData = doc.data().creators;
+          creatorsData.forEach(item => {
+            if (item === user?.uid) {
+              // console.log('Creator ID Matched', doc.data());
+              data.push({
+                name: doc.data().name,
+                description: doc.data().description,
+                currency: doc.data().currency,
+                budget: doc.data().budget,
+                creators: doc.data().creators,
+              });
+            }
+          });
+          // setGoal(100 / saved.budget);
+        });
+        console.log('DATA is', ...data);
+        setSaved([...data]);
+      });
+  }
+
+  function fetchAccountData() {
+    setLoading(true);
+    const data2 = [];
+    const Accountdatas = db
+      .collection(`${user?.uid}`)
+      .get()
+      .then(function (querySnapshot) {
+        console.log('Account Data', querySnapshot.data())
+      });
+      setAccountData(Accountdatas);
+  }
 
   function BudgetRender() {
     return (
@@ -172,38 +215,12 @@ export default function BudgetScreen({ navigation }) {
   }
 
   useEffect(() => {
-    function fetchData() {
-      setLoading(true);
-      const data = [];
-      const Budgetdatas = db
-        .collection(`Budgets`)
-        .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
-            // doc.data() is never undefined for query doc snapshots
-            // console.log(doc.id, ' => ', doc.data().creators);
-            const creatorsData = doc.data().creators;
-            creatorsData.forEach(item => {
-              if (item === user?.uid) {
-                // console.log('Creator ID Matched', doc.data());
-                data.push({
-                  name: doc.data().name,
-                  description: doc.data().description,
-                  currency: doc.data().currency,
-                  budget: doc.data().budget,
-                  creators: doc.data().creators,
-                });
-              }
-            });
-            // setGoal(100 / saved.budget);
-          });
-          console.log('DATA is', ...data);
-          setSaved([...data]);
-        });
-    }
-    fetchData();
+    fetchBudgetData();
+    fetchAccountData();
     setLoading(false);
-  }, [db, user]);
+    const Accountdatas = db.collection(`${user?.uid}`).get();
+    console.log('ACCOUNT DATAS: ', Accountdatas);
+  }, [db, fetchAccountData, fetchBudgetData, user]);
 
   return (
     <>
@@ -214,8 +231,8 @@ export default function BudgetScreen({ navigation }) {
             <>
               <Heading size="lg">Assets</Heading>
               <Card style={styles.card2}>
-                <Text>Number of Accounts:</Text>
-                <Text>Total Amount($):</Text>
+                <Text>Number of Accounts: {JSON.stringify(accountData)}</Text>
+                <Text>Total Amount($): {}</Text>
                 <Text>Total Debt($):</Text>
                 <Text>Total Assets($): </Text>
               </Card>
@@ -248,11 +265,7 @@ export default function BudgetScreen({ navigation }) {
               {BudgetRender()}
               <Button
                 label="Reload Budgets"
-                onPress={() =>
-                  useEffect(() => {
-                    fetchData();
-                  })
-                }
+                onPress={() => fetchBudgetData()}
               />
               <Button
                 label="Create New Budget"

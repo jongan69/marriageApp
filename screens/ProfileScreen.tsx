@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingBottom: 30,
+    // marginBottom: 10,
   },
   item: {
     padding: 10,
@@ -41,7 +42,7 @@ export default function ProfileScreen() {
   const [wc, setWc] = useState(false);
   const [accounts, setAccounts] = useState();
   const [cbAccounts, setCbAccounts] = useState();
-  const [wcAccounts, setwcAccounts] = useState([]);
+  const [wcAccounts, setwcAccounts] = useState();
 
   useEffect(() => {
     async function fetchData() {
@@ -52,15 +53,25 @@ export default function ProfileScreen() {
           .doc(`${user?.uid}`)
           .get();
         console.log('Account Datas', Accountdatas?.data()?.accounts);
-        const CBresult =
-          Accountdatas?.data()?.accounts?.hasOwnProperty('Coinbase');
-        const WCresult =
-          Accountdatas?.data()?.accounts?.hasOwnProperty('WalletConnect');
-        setCb(CBresult);
-        setWc(WCresult);
-        setAccounts(Accountdatas.data().accounts);
-        setCbAccounts(Accountdatas.data().accounts.Coinbase);
-        setwcAccounts([Accountdatas.data().accounts.WalletConnect]);
+
+        if (Accountdatas?.data()?.accounts !== undefined) {
+          const CBresult =
+            Accountdatas?.data()?.accounts?.hasOwnProperty('Coinbase');
+          const WCresult =
+            Accountdatas?.data()?.accounts?.hasOwnProperty('WalletConnect');
+
+          if (CBresult) {
+            setCb(CBresult);
+          }
+
+          if (WCresult) {
+            setWc(WCresult);
+          }
+
+          setAccounts(Accountdatas?.data()?.accounts);
+          setCbAccounts(Accountdatas.data().accounts.Coinbase);
+          setwcAccounts([Accountdatas.data().accounts.WalletConnect]);
+        }
       }
     }
 
@@ -81,42 +92,46 @@ export default function ProfileScreen() {
           <SafeAreaView style={styles.container}>
             {accounts !== null ? (
               <>
-                <Text> Connected Wallets: </Text>
-                {wcAccounts && (
-                  <FlatList
-                    style={styles.list}
-                    data={wcAccounts}
-                    renderItem={item => (
-                      <>
-                        <Text style={styles.item}>
-                          Wallet Connect: {JSON.stringify(wcAccounts)}
-                        </Text>
-                      </>
-                    )}
-                    keyExtractor={index => index}
-                  />
+                {/* <Text> Connected Wallets: </Text> */}
+                {wcAccounts !== null && (
+                  <>
+                    <FlatList
+                      style={styles.list}
+                      data={wcAccounts}
+                      renderItem={item => (
+                        <>
+                          <Text style={styles.item}>
+                            Latest Wallet Connect: {JSON.stringify(wcAccounts)}
+                          </Text>
+                        </>
+                      )}
+                      keyExtractor={(item, index) => index}
+                    />
+                  </>
                 )}
 
-                <Text> Connected Coinbase Accpunts: </Text>
-                {cbAccounts && (
-                  <FlatList
-                    style={styles.list}
-                    data={cbAccounts}
-                    renderItem={item => (
-                      <>
-                        <Text style={styles.item}>
-                          {JSON.stringify(
-                            Object.entries(cbAccounts[item.index])[0][1].name,
-                          )}{' '}
-                          :{' '}
-                          {JSON.stringify(
-                            Object.entries(cbAccounts[item.index])[0][0],
-                          )}
-                        </Text>
-                      </>
-                    )}
-                    keyExtractor={(item, index) => index}
-                  />
+                {cbAccounts !== null && (
+                  <>
+                    <Text> Connected Coinbase Accounts: </Text>
+                    <FlatList
+                      style={styles.list}
+                      data={cbAccounts}
+                      renderItem={item => (
+                        <>
+                          <Text style={styles.item}>
+                            {JSON.stringify(
+                              Object.entries(cbAccounts[item.index])[0][1].name,
+                            )}{' '}
+                            :{' '}
+                            {JSON.stringify(
+                              Object.entries(cbAccounts[item.index])[0][0],
+                            )}
+                          </Text>
+                        </>
+                      )}
+                      keyExtractor={(item, index) => index}
+                    />
+                  </>
                 )}
               </>
             ) : (
