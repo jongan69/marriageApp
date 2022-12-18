@@ -2,7 +2,7 @@
 
 [POAP AWARD](https://app.poap.xyz/token/5301522)
 
-[Backend]<https://marriage-backend.vercel.app/>
+[Backend](https://marriage-backend.vercel.app/)
 
 ## Features
 
